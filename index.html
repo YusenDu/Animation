@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<link rel="stylesheet" href="css/normalize.css" />
+		<link rel="stylesheet" href="css/common.css" />
+		<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/moveObject.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/jquery.mousewheel.min.js" type="text/javascript" charset="utf-8"></script>
+		<title></title>
+		<style type="text/css">
+			.prompt{color: red;font-size: 14px;width: 1200px;height: 30px;line-height: 30px;margin: 50px auto 0;}
+			.container{width: 1200px;height: 800px;border: 1px solid #C0C0C0;position: relative;overflow: hidden;}
+			.big_map{position: absolute;left: 0px;top: 0px;
+					-moz-user-select: none; 
+					-webkit-user-select: none; 
+					-ms-user-select: none; 
+					-khtml-user-select: none; 
+					user-select: none;
+				}
+			.control_map{border-top: 1px solid #C0C0C0;border-right: 1px solid #C0C0C0;position: absolute;left: 0px;bottom: 0px;width: 227px;height: 152px;}
+			.control_map img{width: 100%;height: 100%;-moz-user-select: none;
+					-webkit-user-select: none; 
+					-ms-user-select: none; 
+					-khtml-user-select: none; 
+					user-select: none;}
+			.showArea{display: block;border: 1px solid #f62626;position: absolute;left: 0px;top: 0px;cursor: move;z-index: 99;background: url("img/backOpacity.png") repeat;}
+			.cover{display: block;width: 100%;height: 100%;position: absolute;left: 0px;top: 0px;z-index: 9;}
+			
+			.point{display: block;padding: 35px 5px 0;height: 20px;background: url(img/bg-sign.png) center top no-repeat;position: absolute;top: 620px;left: 915px;font-size: 14px;color: yellow;}
+			
+		</style>
+		
+	</head>
+	<body>
+		<div class="prompt"> 若显示区域过大，可拖动左下角红色框进行操作。</div>
+		<div class="container" ondragstart="return false">
+			
+			<div class="big_map">
+				<img src="img/metroLine.jpg" alt="" class="mapImg" ondragstart="return false"/>
+				<a href="index.html" class="point"><b>天安门</b></a>
+			</div>
+			<div class="control_map" ondragstart="return false">
+				<img src="img/metroLine.jpg" ondragstart="return false"/>
+				<span class="showArea" style="" ondragstart="return false"></span>
+
+			</div>
+		</div>
+		
+		<script type="text/javascript">
+		
+		/***********************
+		* 函数：判断滚轮滚动方向
+		* 作者：walkingp
+		* 参数：event
+		*************************/
+   
+      $(function(){
+      		
+      		var i=1.0;
+      		
+			var $container = $(".container");//外容器
+			var $bigMap = $(".big_map");//显示的图片的容器
+			
+			var $controlMap = $(".control_map");//缩略图的容器
+			var $showArea = $(".showArea");//缩略图中可移动的区域
+			
+			var imgWidth = $(".big_map img").width()
+			var imgHeight = $(".big_map img").height()
+			
+			
+			
+			$bigMap.width(imgWidth)
+			$bigMap.height(imgHeight)
+			
+			var r = $container.width() / imgWidth
+			
+			console.log(r)
+			
+            //调用方法
+			$showArea.MoveObject($container,$controlMap,$showArea,8);
+			
+			
+			
+			$(".big_map").mousewheel(function(event,delta){
+				
+				
+				
+				if(delta>0){
+					if(i<1.9){
+						i=i+0.1;
+					}else{
+						i=2;
+					}
+				}else{
+					if(i > (r+0.1)){
+						i=i-0.1;
+					}else{
+						i=r;
+					}
+				}
+				
+				
+				console.log(i)
+				
+				$(".big_map img").width(imgWidth*i)
+				$(".big_map img").height(imgHeight*i)
+
+				$bigMap.width(imgWidth*i)
+				$bigMap.height(imgHeight*i)
+				
+				$bigMap.css({"left":$bigMap.css("left")*i,"top":$bigMap.css("top")*i})
+	            //调用方法
+	            
+				$showArea.MoveObject($container,$controlMap,$showArea,8,i,true);
+				
+			})
+			
+		})
+	     
+		</script>
+	</body>
+</html>
